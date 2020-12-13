@@ -104,6 +104,7 @@ try {
 		console.log("\tFlags");
 		console.log("\t-----");
 		console.log("-a  --all   To view all the aliases.");
+		console.log("-h  --help  To view help.");
 		console.log("\n");
 
 		return;

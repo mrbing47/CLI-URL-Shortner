@@ -41,6 +41,7 @@ Follow the below steps in the **exact order**:
     -----
 
     -a  --all   To view all the aliases.
+    -h  --help  To view help.
 ```
 
 ### Examples

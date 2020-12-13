@@ -1,0 +1,17 @@
+{
+	"name": "cli-url-shortner",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node script.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"minimist": "^1.2.5",
+		"open": "^7.3.0",
+		"valid-url": "^1.0.9"
+	}
+}

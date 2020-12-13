@@ -2,12 +2,13 @@ const open = require("open");
 const fs = require("fs");
 const validUrl = require("valid-url");
 var argv = require("minimist")(process.argv.slice(2), {
-	boolean: ["all"],
+	boolean: ["all", "help"],
 	alias: {
 		c: "create",
 		u: "update",
 		d: "delete",
 		a: "all",
+		h: "help",
 	},
 });
 
@@ -89,6 +90,22 @@ try {
 		console.log("\n");
 		for (let i in urls) console.log(i, " => ", urls[i]);
 		console.log("\n");
+		return;
+	}
+
+	if (argv.help) {
+		console.log("\n");
+		console.log("\tArguments");
+		console.log("\t---------");
+		console.log("-c  [alias] [valid Web URL] => To create a new alias.");
+		console.log("-u  [alias] [valid Web URL] => To update an existing alias.");
+		console.log("-d  [alias]                 => To delete an alias.");
+		console.log("\n");
+		console.log("\tFlags");
+		console.log("\t-----");
+		console.log("-a  --all   To view all the aliases.");
+		console.log("\n");
+
 		return;
 	}
 

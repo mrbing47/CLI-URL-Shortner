@@ -14,10 +14,12 @@ var argv = require("minimist")(process.argv.slice(2), {
 
 let urls = {};
 
+console.log("\n");
+
 try {
 	urls = require("./urls.json");
 } catch (err) {
-	console.log("\nNo File Found. One will be created later.");
+	console.log("No File Found. One will be created later.");
 }
 
 (async () => {
@@ -27,18 +29,23 @@ try {
 	if (argv.create) {
 		const alias = argv.create;
 
+		if (typeof alias != "string") {
+			console.log("No Alias Provided.");
+			return;
+		}
+
 		if (urls[alias]) {
-			console.log("\nAlias Already Exists.\n");
+			console.log("Alias Already Exists.");
 			return;
 		}
 
 		if (argv._.length === 0) {
-			console.log("\nNo URL Provided.\n");
+			console.log("No URL Provided.");
 			return;
 		}
 
 		if (!validUrl.isWebUri(argv._[0])) {
-			console.log("\nInvalid URL Provided.\n");
+			console.log("Invalid URL Provided.");
 			return;
 		}
 
@@ -51,18 +58,23 @@ try {
 	if (argv.update) {
 		const alias = argv.update;
 
+		if (typeof alias != "string") {
+			console.log("No Alias Provided.");
+			return;
+		}
+
 		if (!urls[alias]) {
-			console.log("\nAlias does not Exist.");
+			console.log("Alias does not Exist.");
 			return;
 		}
 
 		if (argv._.length === 0) {
-			console.log("\nNo URL Provided.\n");
+			console.log("No URL Provided.");
 			return;
 		}
 
 		if (!validUrl.isWebUri(argv._[0])) {
-			console.log("\nInvalid URL Provided.\n");
+			console.log("Invalid URL Provided.");
 			return;
 		}
 
@@ -75,8 +87,13 @@ try {
 	if (argv.delete) {
 		const alias = argv.delete;
 
+		if (typeof alias != "string") {
+			console.log("No Alias Provided.");
+			return;
+		}
+
 		if (!urls[alias]) {
-			console.log("\nAlias does not Exist.\n");
+			console.log("Alias does not Exist.");
 			return;
 		}
 
@@ -87,39 +104,44 @@ try {
 	}
 
 	if (argv.all) {
-		console.log("\n");
 		for (let i in urls) console.log(i, " => ", urls[i]);
-		console.log("\n");
 		return;
 	}
 
 	if (argv.help) {
-		console.log("\n");
-		console.log("\tArguments");
-		console.log("\t---------");
-		console.log("-c  [alias] [valid Web URL] => To create a new alias.");
-		console.log("-u  [alias] [valid Web URL] => To update an existing alias.");
-		console.log("-d  [alias]                 => To delete an alias.");
-		console.log("\n");
-		console.log("\tFlags");
-		console.log("\t-----");
-		console.log("-a  --all   To view all the aliases.");
-		console.log("-h  --help  To view help.");
-		console.log("\n");
+		console.log(`
+		\n
+		\tArguments
+		\t---------
+		-c  [alias] [valid Web URL] => To create a new alias.
+		-u  [alias] [valid Web URL] => To update an existing alias.
+		-d  [alias]                 => To delete an alias.
+		\n\n
+		\tFlags
+		\t-----
+		-a  --all   To view all the aliases.
+		-h  --help  To view help.
+		`);
 
 		return;
 	}
 
 	if (isWrite) {
 		fs.writeFile("./urls.json", JSON.stringify(urls), (err) => {
-			if (!err) console.log("\nOperation " + action + " executed successfully.\n");
+			if (!err) console.log("Operation " + action + " executed successfully.");
 			else console.log(err);
 		});
 	} else {
 		if (argv._.length === 0) {
-			console.log("\nNo Alias Provided.\n");
+			console.log("No Alias Provided.");
 			return;
 		}
-		for (let i of argv._) await open(urls[i]);
+
+		for (let i of argv._) {
+			if (urls[i]) await open(urls[i]);
+			else console.log(`"${i}" alias does not exist.`);
+		}
 	}
 })();
+
+console.log("\n");

@@ -2,9 +2,12 @@
 	"name": "cli-url-shortner",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"main": "script.js",
 	"scripts": {
 		"start": "node script.js"
+	},
+	"bin": {
+		"url": "./script.js"
 	},
 	"keywords": [],
 	"author": "",

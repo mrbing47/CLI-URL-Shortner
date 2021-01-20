@@ -1,2 +1,2 @@
-cd "/path/to/project"
+cd "/Users/sanjay/Sarthik/Web Projects/CLI-URL-Shortner"
 node script $*

@@ -14,7 +14,7 @@ var argv = require("minimist")(process.argv.slice(2), {
 
 let urls = {};
 
-console.log("\n");
+console.log();
 
 try {
 	urls = require("./urls.json");
@@ -138,10 +138,12 @@ try {
 		}
 
 		for (let i of argv._) {
-			if (urls[i]) await open(urls[i]);
-			else console.log(`"${i}" alias does not exist.`);
+			if (urls[i]) {
+				console.log("Opening", urls[i]);
+				await open(urls[i]);
+			} else console.log(`"${i}" alias does not exist.`);
 		}
 	}
 })();
 
-console.log("\n");
+console.log();

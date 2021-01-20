@@ -18,13 +18,13 @@ Follow the below steps in the **exact order**:
 1. Run `npm i` or `npm install` to install the requied packages.
 2. Edit `cmd/url` (WINDOWS) or `bash/url` (LINUX/UNIX) file to add the project directory.
 3. Follow the following steps according to your Operating System to add command to CLI.
-	a. (WINDOWS) Add `path/to/project/cmd` to the [**_Environment Variables_**](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/).
-	b. (LINUS/UNIX) 
-		- Run `nano ~/.zshrc` for ZSH or `nano ~/.bashrc` for Bash.
-		- Append `export PATH="path/to/project/bash:$PATH"`.
-		- Run `source ~/.zshrc` for ZSH or `source ~/.bashrc` for Bash.
-		- Run `echo $PATH` to verify if path has been added.
-	c. Edit `path/to/project` accordingly in either step.
+	1. (WINDOWS) Add `path/to/project/cmd` to the [**_Environment Variables_**](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/).
+	2. (LINUS/UNIX) 
+		1. Run `nano ~/.zshrc` for ZSH or `nano ~/.bashrc` for Bash.
+		2. Append `export PATH="path/to/project/bash:$PATH"`.
+		3. Run `source ~/.zshrc` for ZSH or `source ~/.bashrc` for Bash.
+		4. Run `echo $PATH` to verify if path has been added.
+	3. Edit `path/to/project` accordingly in either step.
 4. Use following commands to use this _awesome_ project.
 
 </br>

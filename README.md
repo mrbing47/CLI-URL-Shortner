@@ -44,7 +44,6 @@ Commands:
   url all                        Display all Alias.                           [aliases: a]
 
 Options:
-      --version  Show version number                                               [boolean]
   -h, --help     Show help                                                         [boolean]
 ```
 
@@ -56,7 +55,6 @@ url open <alias> [--options?]
 Open the URL. Use open -h for optional flags
 
 Options:
-      --version                  Show version number                                  [boolean]
       --ff, --firefox            Opens the URL in Firefox.                            [boolean]
       --ffp, --firefox-private   Opens the URL in Firefox Private mode.               [boolean]
       --gc, --chrome             Opens the URL in Google Chrome.                      [boolean]

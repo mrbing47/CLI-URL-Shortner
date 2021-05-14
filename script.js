@@ -112,5 +112,5 @@ yargs(hideBin(process.argv))
 		},
 	})
 	.help()
-	.wrap(92)
+	.wrap(95)
 	.alias("h", "help").argv;

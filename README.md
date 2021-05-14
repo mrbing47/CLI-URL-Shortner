@@ -37,11 +37,11 @@ Follow the below steps in the **exact order**:
 url [command]
 
 Commands:
-  script open <alias> [--options?]  Open the URL. Use open -h for optional flags [aliases: o]
-  script create <alias> <url>       Create a new Alias.                          [aliases: c]
-  script update <alias> <url>       Update an existing Alias.                    [aliases: u]
-  script delete <alias>             Create a new Alias.                          [aliases: d]
-  script all                        Display all Alias.                           [aliases: a]
+  url open <alias> [--options?]  Open the URL. Use open -h for optional flags [aliases: o]
+  url create <alias> <url>       Create a new Alias.                          [aliases: c]
+  url update <alias> <url>       Update an existing Alias.                    [aliases: u]
+  url delete <alias>             Create a new Alias.                          [aliases: d]
+  url all                        Display all Alias.                           [aliases: a]
 
 Options:
       --version  Show version number                                               [boolean]

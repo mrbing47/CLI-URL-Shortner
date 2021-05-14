@@ -1,2 +1,2 @@
 cd "/Users/sanjay/Sarthik/Web Projects/CLI-URL-Shortner"
-node script $*
+node url $*

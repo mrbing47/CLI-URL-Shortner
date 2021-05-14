@@ -1,147 +1,116 @@
+const Store = require("./store.js");
+const chalk = require("chalk");
 const open = require("open");
-const fs = require("fs");
 const validUrl = require("valid-url");
-var argv = require("minimist")(process.argv.slice(2), {
-	boolean: ["all", "help"],
-	alias: {
-		c: "create",
-		u: "update",
-		d: "delete",
-		a: "all",
-		h: "help",
-	},
-});
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
 
-let urls = {};
+const error = chalk.bold.red;
+const info = chalk.bold.hex("#1565c0");
+const store = new Store("./urls.json");
 
-console.log();
-
-try {
-	urls = require("./urls.json");
-} catch (err) {
-	console.log("No File Found. One will be created later.");
-}
-
-(async () => {
-	let isWrite = false;
-	let action = "";
-
-	if (argv.create) {
-		const alias = argv.create;
-
-		if (typeof alias != "string") {
-			console.log("No Alias Provided.");
-			return;
-		}
-
-		if (urls[alias]) {
-			console.log("Alias Already Exists.");
-			return;
-		}
-
-		if (argv._.length === 0) {
-			console.log("No URL Provided.");
-			return;
-		}
-
-		if (!validUrl.isWebUri(argv._[0])) {
-			console.log("Invalid URL Provided.");
-			return;
-		}
-
-		urls[alias] = argv._[0];
-		argv._.shift();
-		isWrite = true;
-		action = "Create";
-	}
-
-	if (argv.update) {
-		const alias = argv.update;
-
-		if (typeof alias != "string") {
-			console.log("No Alias Provided.");
-			return;
-		}
-
-		if (!urls[alias]) {
-			console.log("Alias does not Exist.");
-			return;
-		}
-
-		if (argv._.length === 0) {
-			console.log("No URL Provided.");
-			return;
-		}
-
-		if (!validUrl.isWebUri(argv._[0])) {
-			console.log("Invalid URL Provided.");
-			return;
-		}
-
-		urls[alias] = argv._[0];
-		argv._.shift();
-		isWrite = true;
-		action = "Update";
-	}
-
-	if (argv.delete) {
-		const alias = argv.delete;
-
-		if (typeof alias != "string") {
-			console.log("No Alias Provided.");
-			return;
-		}
-
-		if (!urls[alias]) {
-			console.log("Alias does not Exist.");
-			return;
-		}
-
-		delete urls[alias];
-		argv._.shift();
-		isWrite = true;
-		action = "Delete";
-	}
-
-	if (argv.all) {
-		for (let i in urls) console.log(i, " => ", urls[i]);
-		return;
-	}
-
-	if (argv.help) {
-		console.log(`
-		\n
-		\tArguments
-		\t---------
-		-c  [alias] [valid Web URL] => To create a new alias.
-		-u  [alias] [valid Web URL] => To update an existing alias.
-		-d  [alias]                 => To delete an alias.
-		\n\n
-		\tFlags
-		\t-----
-		-a  --all   To view all the aliases.
-		-h  --help  To view help.
-		`);
-
-		return;
-	}
-
-	if (isWrite) {
-		fs.writeFile("./urls.json", JSON.stringify(urls), (err) => {
-			if (!err) console.log("Operation " + action + " executed successfully.");
-			else console.log(err);
-		});
-	} else {
-		if (argv._.length === 0) {
-			console.log("No Alias Provided.");
-			return;
-		}
-
-		for (let i of argv._) {
-			if (urls[i]) {
-				console.log("Opening", urls[i]);
-				await open(urls[i]);
-			} else console.log(`"${i}" alias does not exist.`);
-		}
-	}
-})();
+yargs(hideBin(process.argv))
+	.command({
+		command: "open <alias> [--options?]",
+		aliases: ["o"],
+		desc: "Open the URL. Use " + info("open -h") + " for optional flags",
+		builder: (yargs) =>
+			yargs
+				.option("ff", {
+					alias: "firefox",
+					describe: "Opens the URL in Firefox.",
+					type: "boolean",
+				})
+				.option("ffp", {
+					alias: "firefox-private",
+					describe: "Opens the URL in Firefox Private mode.",
+					type: "boolean",
+				})
+				.option("gc", {
+					alias: "chrome",
+					describe: "Opens the URL in Google Chrome.",
+					type: "boolean",
+				})
+				.option("gci", {
+					alias: "chrome-incognito",
+					describe: "Opens the URL in Google Chrome incognito mode.",
+					type: "boolean",
+				}),
+		handler: (argv) => {
+			const value = store.get(argv.alias);
+			if (value) {
+				const options = {};
+				if (argv.ff) {
+					options["app"] = { name: open.apps.firefox };
+				}
+				if (argv.ffp) {
+					options["app"] = { name: open.apps.firefox, arguments: ["-private"] };
+				}
+				if (argv.gc) {
+					options["app"] = { name: open.apps.chrome };
+				}
+				if (argv.gci) {
+					options["app"] = { name: open.apps.chrome, arguments: ["--incognito"] };
+				}
+				open(value, options);
+			} else console.log(error("ERR:"), "Provide a valid Alias.");
+		},
+	})
+	.command({
+		command: "create <alias> <url>",
+		aliases: ["c"],
+		desc: "Create a new Alias.",
+		builder: {},
+		handler: (argv) => {
+			if (store.get(argv.alias)) console.log(error("ERR:"), "This alias already exists.");
+			else {
+				if (!validUrl.isWebUri(argv.url)) console.log(error("ERR:"), "Given URL is not a valid URL.");
+				else {
+					store.set(argv.alias, argv.url);
+					console.log(info("INFO:"), "Alias has been Created.");
+				}
+			}
+		},
+	})
+	.command({
+		command: "update <alias> <url>",
+		aliases: ["u"],
+		desc: "Update an existing Alias.",
+		builder: {},
+		handler: (argv) => {
+			if (!store.get(argv.alias)) console.log(error("ERR:"), "This alias does not exist.");
+			else {
+				if (!validUrl.isWebUri(argv.url)) console.log(error("ERR:"), "Given URL is not a valid URL.");
+				else {
+					store.set(argv.alias, argv.url);
+					console.log(info("INFO:"), "Alias has been Updated.");
+				}
+			}
+		},
+	})
+	.command({
+		command: "delete <alias>",
+		aliases: ["d"],
+		desc: "Create a new Alias.",
+		builder: {},
+		handler: (argv) => {
+			if (!store.get(argv.alias)) console.log(error("ERR:"), "Alias does not exist.");
+			else {
+				store.delete(argv.alias);
+				console.log(info("INFO:"), "Alias has been Deleted.");
+			}
+		},
+	})
+	.command({
+		command: "all",
+		aliases: ["a"],
+		desc: "Display all Alias.",
+		builder: {},
+		handler: (argv) => {
+			const urls = store.getStore();
+			for (let i in urls) console.log(chalk.hex("#ffd600")(i), "=>", urls[i]);
+		},
+	})
+	.help()
+	.wrap(92)
+	.alias("h", "help").argv;
